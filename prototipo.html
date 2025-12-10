@@ -3,48 +3,59 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Tailwind CSS MINIFICADO (mucho más ligero) -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-
-    <!-- Flowbite CSS optimizado con PRELOAD -->
-    <link rel="preload"
-          href="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.css"
-          as="style"
-          onload="this.onload=null;this.rel='stylesheet'">
-
-    <noscript>
-        <link rel="stylesheet"
-              href="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.css">
-    </noscript>
-
     <title>Create Account</title>
+    <style>
+        .skeleton {
+            background: linear-gradient(90deg, #e5e7eb 0%, #f3f4f6 50%, #e5e7eb 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900">
-
 <section class="bg-gray-50 dark:bg-gray-900">
   <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+      <!-- SKELETON -->
+      <div id="skeleton"
+           class="w-full sm:max-w-md p-6 space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+          <div class="h-6 w-48 skeleton rounded"></div>
+          <div class="space-y-2">
+              <div class="h-4 w-32 skeleton rounded"></div>
+              <div class="h-10 w-full skeleton rounded"></div>
+          </div>
+          <div class="space-y-2">
+              <div class="h-4 w-28 skeleton rounded"></div>
+              <div class="h-10 w-full skeleton rounded"></div>
+          </div>
+          <div class="space-y-2">
+              <div class="h-4 w-44 skeleton rounded"></div>
+              <div class="h-10 w-full skeleton rounded"></div>
+          </div>
+          <div class="flex items-center space-x-3">
+              <div class="h-5 w-5 skeleton rounded"></div>
+              <div class="h-4 w-48 skeleton rounded"></div>
+          </div>
+          <div class="h-10 w-full skeleton rounded"></div>
 
-      <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-          <!-- LOGO LOCAL O PRELOAD PARA MEJOR PERFORMANCE -->
-          <img class="w-8 h-8 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo" loading="lazy">
-          Flowbite
-      </a>
-
-      <div class="w-full bg-white rounded-lg shadow dark:border 
+          <div class="h-4 w-40 skeleton rounded mx-auto"></div>
+      </div>
+      <!-- FORMULARIO -->
+      <div id="realForm" class="hidden w-full bg-white rounded-lg shadow dark:border 
                   md:mt-0 sm:max-w-md xl:p-0 
                   dark:bg-gray-800 dark:border-gray-700">
-          
           <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-
               <h1 class="text-xl font-bold leading-tight tracking-tight 
                          text-gray-900 md:text-2xl dark:text-white">
                   Create an account
               </h1>
-
-              <form class="space-y-4 md:space-y-6">
-
+              <form id="form" class="space-y-4 md:space-y-6" novalidate>
+                  <!-- EMAIL -->
                   <div>
                       <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                           Your email
@@ -56,21 +67,25 @@
                                     dark:placeholder-gray-400 dark:text-white 
                                     dark:focus:ring-blue-500 dark:focus:border-blue-500"
                              placeholder="name@company.com">
+                      <p id="emailError" class="hidden mt-1 text-red-500 text-sm">Invalid email</p>
                   </div>
-
+                  <!-- PASSWORD -->
                   <div>
                       <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                           Password
                       </label>
-                      <input type="password" id="password" required
+                      <input type="password" id="password" required minlength="6"
                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
                                     focus:ring-primary-600 focus:border-primary-600 
                                     block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 
                                     dark:placeholder-gray-400 dark:text-white 
                                     dark:focus:ring-blue-500 dark:focus:border-blue-500"
                              placeholder="••••••••">
+                      <p id="passError" class="hidden mt-1 text-red-500 text-sm">
+                          Password must be at least 6 characters
+                      </p>
                   </div>
-
+                  <!-- CONFIRM PASSWORD -->
                   <div>
                       <label for="confirm-password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                           Confirm password
@@ -82,8 +97,11 @@
                                     dark:placeholder-gray-400 dark:text-white 
                                     dark:focus:ring-blue-500 dark:focus:border-blue-500"
                              placeholder="••••••••">
+                      <p id="confirmError" class="hidden mt-1 text-red-500 text-sm">
+                          Passwords do not match
+                      </p>
                   </div>
-
+                  <!-- TERMS -->
                   <div class="flex items-start">
                       <div class="flex items-center h-5">
                           <input id="terms" type="checkbox" required
@@ -92,17 +110,19 @@
                                         dark:bg-gray-700 dark:border-gray-600 
                                         dark:focus:ring-primary-600 dark:ring-offset-gray-800">
                       </div>
-
                       <div class="ml-3 text-sm">
                           <label for="terms" class="font-light text-gray-500 dark:text-gray-300">
                               I accept the 
-                              <a class="font-medium text-primary-600 hover:underline dark:text-primary-500" href="#">
+                              <a class="font-medium text-black hover:underline dark:text-primary-500" href="#">
                                   Terms and Conditions
                               </a>
                           </label>
                       </div>
+                      <p id="termsError" class="hidden ml-3 text-red-500 text-sm">
+                          You must accept the terms
+                      </p>
                   </div>
-
+                  <!-- BUTTON -->
                   <button type="submit"
                           class="w-full text-black bg-primary-600 hover:bg-primary-700
                             focus:ring-4 focus:outline-none focus:ring-primary-300
@@ -112,22 +132,52 @@
                             dark:focus:ring-primary-800">
                       Create an account
                   </button>
-
-                  <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+                 <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                       Already have an account? 
                       <a href="#" class="font-medium text-black hover:underline dark:text-primary-500">
                           Login here
                       </a>
                   </p>
-
               </form>
           </div>
       </div>
   </div>
 </section>
+<script>
+// Mostrar formulario después del skeleton
+setTimeout(() => {
+    document.getElementById("skeleton").classList.add("hidden");
+    document.getElementById("realForm").classList.remove("hidden");
+}, 1200);
+// VALIDACIÓN DEL FORMULARIO
+document.getElementById("form").addEventListener("submit", function(e){
+    e.preventDefault();
+    let email = document.getElementById("email");
+    let pass = document.getElementById("password");
+    let confirm = document.getElementById("confirm-password");
+    let terms = document.getElementById("terms");
+    let valid = true;
+    if(!email.value.includes("@")){
+        emailError.classList.remove("hidden");
+        valid = false;
+    } else emailError.classList.add("hidden");
+    if(pass.value.length < 6){
+        passError.classList.remove("hidden");
+        valid = false;
+    } else passError.classList.add("hidden");
+    if(pass.value !== confirm.value){
+        confirmError.classList.remove("hidden");
+        valid = false;
+    } else confirmError.classList.add("hidden");
+    if(!terms.checked){
+        termsError.classList.remove("hidden");
+        valid = false;
+    } else termsError.classList.add("hidden");
 
-<!-- Flowbite JS optimizado con DEFER -->
-<script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js" defer></script>
-
+    if(valid){
+        alert("Account created successfully!");
+    }
+});
+</script>
 </body>
 </html>
